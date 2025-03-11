@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Drawing App</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { text-align: center; background: #f8f9fa; padding: 20px; }
+        h2 { font-size: 24px; margin-bottom: 15px; }
+        #toolbar { margin-bottom: 10px; display: flex; justify-content: center; gap: 10px; }
+        input, button { padding: 8px; font-size: 14px; border-radius: 5px; border: 1px solid #ddd; cursor: pointer; }
+        canvas { background: white; border: 1px solid #ccc; border-radius: 5px; cursor: crosshair; }
+    </style>
+</head>
+<body>
+
+    <h2>🖌️ Simple Drawing App for Population Graphics</h2>
+
+    <!-- Toolbar for Drawing Controls -->
+    <div id="toolbar">
+        <input type="color" id="colorPicker"> <!-- Select Brush Color -->
+        <input type="range" id="brushSize" min="1" max="10" value="2"> <!-- Set Brush Size -->
+        <button onclick="clearCanvas()">Clear</button> <!-- Clear Canvas -->
+        <button onclick="saveCanvas()">Download</button> <!-- Save Canvas -->
+    </div>
+
+    <!-- Drawing Canvas -->
+    <canvas id="drawingCanvas" width="800" height="500"></canvas>
+
+    <script>
+        // ----- Definition: Initialize Canvas -----
+        // Creating canvas & context for drawing
+        const canvas = document.getElementById("drawingCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // ----- Definition: Variables for Drawing -----
+        let isDrawing = false;  // Track mouse state
+        let color = "#000000";  // Default brush color (black)
+        let size = 2;           // Default brush size
+
+        // ----- Definition: Set Brush Color -----
+        document.getElementById("colorPicker").addEventListener("input", (e) => {
+            color = e.target.value; // Update brush color
+        });
+
+        // ----- Definition: Set Brush Size -----
+        document.getElementById("brushSize").addEventListener("input", (e) => {
+            size = e.target.value; // Update brush size
+        });
+
+        // ----- Definition: Start Drawing -----
+        canvas.addEventListener("mousedown", (e) => {
+            isDrawing = true;
+            draw(e);
+        });
+
+        // ----- Definition: Stop Drawing -----
+        canvas.addEventListener("mouseup", () => {
+            isDrawing = false;
+            ctx.beginPath(); // Reset path to avoid continuous lines
+        });
+
+        // ----- Definition: Draw on Canvas -----
+        canvas.addEventListener("mousemove", draw);
+
+        function draw(e) {
+            if (!isDrawing) return; // If mouse is not clicked, don't draw
+
+            ctx.lineWidth = size;
+            ctx.lineCap = "round"; // Smooth edges
+            ctx.strokeStyle = color;
+
+            ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+        }
+
+        // ----- Definition: Clear Canvas -----
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // ----- Definition: Save Drawing -----
+        function saveCanvas() {
+            let link = document.createElement("a");
+            link.download = "drawing.png";
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+    </script>
+
+</body>
+</html>

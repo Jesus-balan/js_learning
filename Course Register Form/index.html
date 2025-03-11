@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Register Form</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { text-align: center; background: #f8f9fa; padding: 20px; }
+        h2 { font-size: 24px; margin-bottom: 15px; }
+        form { margin-bottom: 15px; padding: 10px; background: white; display: inline-block; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input { padding: 8px; margin: 5px; width: 250px; border: 1px solid #ccc; border-radius: 5px; }
+        button { padding: 8px 12px; margin: 5px; border: none; background: #007bff; color: white; cursor: pointer; border-radius: 5px; }
+        button:hover { background: #0056b3; }
+        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+        th, td { padding: 10px; border: 1px solid #ccc; text-align: center; }
+        th { background: #007bff; color: white; }
+        .edit-btn, .delete-btn { cursor: pointer; padding: 5px 10px; border: none; border-radius: 5px; color: white; }
+        .edit-btn { background: #ffc107; }
+        .delete-btn { background: #dc3545; }
+    </style>
+</head>
+<body>
+
+    <h2>📚 Course Register Form</h2>
+
+    <!-- Course Registration Form -->
+    <form id="courseForm">
+        <input type="text" id="courseName" placeholder="Enter Course Name" required>
+        <input type="text" id="courseCode" placeholder="Enter Course Code" required>
+        <input type="text" id="courseInstructor" placeholder="Enter Instructor Name" required>
+        <button type="submit">Add Course</button>
+    </form>
+
+    <!-- Course Data Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Course Name</th>
+                <th>Course Code</th>
+                <th>Instructor</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="courseTableBody"></tbody>
+    </table>
+
+    <script>
+        // ----- Definition: Select Elements -----
+        const courseForm = document.getElementById("courseForm");
+        const courseName = document.getElementById("courseName");
+        const courseCode = document.getElementById("courseCode");
+        const courseInstructor = document.getElementById("courseInstructor");
+        const courseTableBody = document.getElementById("courseTableBody");
+
+        let editIndex = null; // Store index for editing
+
+        // ----- Definition: Handle Form Submission -----
+        courseForm.addEventListener("submit", function (e) {
+            e.preventDefault(); // Prevent page reload
+
+            const courseData = {
+                name: courseName.value,
+                code: courseCode.value,
+                instructor: courseInstructor.value
+            };
+
+            if (editIndex === null) {
+                addCourseToTable(courseData);
+            } else {
+                updateCourseInTable(editIndex, courseData);
+            }
+
+            courseForm.reset(); // Clear input fields
+            editIndex = null; // Reset edit mode
+        });
+
+        // ----- Definition: Add Course to Table -----
+        function addCourseToTable(courseData) {
+            const row = courseTableBody.insertRow();
+            row.innerHTML = `
+                <td>${courseData.name}</td>
+                <td>${courseData.code}</td>
+                <td>${courseData.instructor}</td>
+                <td>
+                    <button class="edit-btn" onclick="editCourse(this)">Edit</button>
+                    <button class="delete-btn" onclick="deleteCourse(this)">Delete</button>
+                </td>
+            `;
+        }
+
+        // ----- Definition: Edit Course -----
+        function editCourse(button) {
+            editIndex = button.parentElement.parentElement.rowIndex - 1; // Get row index
+            const row = courseTableBody.rows[editIndex];
+
+            courseName.value = row.cells[0].innerText;
+            courseCode.value = row.cells[1].innerText;
+            courseInstructor.value = row.cells[2].innerText;
+        }
+
+        // ----- Definition: Update Course in Table -----
+        function updateCourseInTable(index, courseData) {
+            const row = courseTableBody.rows[index];
+
+            row.cells[0].innerText = courseData.name;
+            row.cells[1].innerText = courseData.code;
+            row.cells[2].innerText = courseData.instructor;
+        }
+
+        // ----- Definition: Delete Course -----
+        function deleteCourse(button) {
+            const row = button.parentElement.parentElement;
+            courseTableBody.deleteRow(row.rowIndex - 1);
+        }
+    </script>
+
+</body>
+</html>

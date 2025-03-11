@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { text-align: center; background: #ffffff; padding: 20px; }
+        h2 { font-size: 28px; margin-bottom: 15px; color: #333; }
+        .container { max-width: 400px; margin: auto; background: #f8f8f8; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); }
+        .time-input { padding: 10px; font-size: 18px; text-align: center; width: 80px; border: 1px solid #ccc; border-radius: 5px; }
+        .timer { font-size: 40px; margin: 20px 0; font-weight: bold; color: #333; }
+        .btn { padding: 10px; font-size: 16px; border-radius: 5px; border: none; cursor: pointer; margin: 5px; }
+        .start { background: #28a745; color: white; }
+        .pause { background: #ffc107; color: white; }
+        .reset { background: #dc3545; color: white; }
+        .btn:hover { opacity: 0.8; }
+        .notification { margin-top: 15px; padding: 10px; display: none; font-size: 18px; background: #007bff; color: white; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <h2>⏳ Countdown Timer</h2>
+
+    <div class="container">
+        <input type="number" class="time-input" id="minutesInput" placeholder="Min" min="0">
+        <input type="number" class="time-input" id="secondsInput" placeholder="Sec" min="0" max="59">
+        
+        <div class="timer" id="countdown">00:00</div>
+
+        <button class="btn start" onclick="startCountdown()">Start</button>
+        <button class="btn pause" onclick="pauseCountdown()">Pause</button>
+        <button class="btn reset" onclick="resetCountdown()">Reset</button>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        let countdownTime = 0;
+        let countdownInterval;
+        let isPaused = false;
+
+        function startCountdown() {
+            const minutes = parseInt(document.getElementById("minutesInput").value) || 0;
+            const seconds = parseInt(document.getElementById("secondsInput").value) || 0;
+            if (minutes === 0 && seconds === 0) {
+                showNotification("⚠️ Please enter a valid time!", "red");
+                return;
+            }
+            if (!isPaused) {
+                countdownTime = minutes * 60 + seconds;
+            }
+            isPaused = false;
+            updateDisplay();
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+
+        function updateCountdown() {
+            if (countdownTime <= 0) {
+                clearInterval(countdownInterval);
+                showNotification("🎉 Time's up!", "blue");
+                return;
+            }
+            countdownTime--;
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            const minutes = Math.floor(countdownTime / 60);
+            const seconds = countdownTime % 60;
+            document.getElementById("countdown").innerText = 
+                String(minutes).padStart(2, '0') + ":" + String(seconds).padStart(2, '0');
+        }
+
+        function pauseCountdown() {
+            clearInterval(countdownInterval);
+            isPaused = true;
+        }
+
+        function resetCountdown() {
+            clearInterval(countdownInterval);
+            countdownTime = 0;
+            isPaused = false;
+            document.getElementById("minutesInput").value = "";
+            document.getElementById("secondsInput").value = "";
+            document.getElementById("countdown").innerText = "00:00";
+        }
+
+        function showNotification(message, color = "#007bff") {
+            const notification = document.getElementById("notification");
+            notification.innerText = message;
+            notification.style.background = color;
+            notification.style.display = "block";
+            setTimeout(() => { notification.style.display = "none"; }, 3000);
+        }
+    </script>
+
+</body>
+</html>

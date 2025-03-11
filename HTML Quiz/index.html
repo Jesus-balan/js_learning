@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive HTML Quiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { text-align: center; background: #ffffff; padding: 20px; }
+        h2 { font-size: 28px; margin-bottom: 15px; color: #333; }
+        .quiz-container { max-width: 500px; margin: auto; background: #f8f8f8; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); }
+        .question { font-size: 20px; margin-bottom: 10px; opacity: 0; transition: opacity 0.8s ease-in-out; }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .options label { font-size: 16px; cursor: pointer; padding: 10px; background: #e0e0e0; border-radius: 5px; transition: 0.3s; }
+        .options label:hover { background: #d6d6d6; }
+        .btn { padding: 10px; font-size: 16px; border-radius: 5px; border: none; cursor: pointer; background: #007bff; color: white; margin-top: 15px; }
+        .btn:hover { background: #0056b3; }
+        .notification { margin-top: 15px; padding: 10px; display: none; font-size: 18px; background: #28a745; color: white; border-radius: 5px; }
+        .fade-in { opacity: 1 !important; }
+    </style>
+</head>
+<body>
+
+    <h2>📖 Interactive HTML Quiz</h2>
+
+    <div class="quiz-container">
+        <div id="quiz">
+            <p class="question" id="questionText">Loading question...</p>
+            <div class="options" id="optionsList"></div>
+            <button class="btn" onclick="submitAnswer()">Submit Answer</button>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Define Quiz Questions
+        const quizData = [
+            { question: "What does HTML stand for?", options: ["Hyper Text Markup Language", "Hyperlinks and Text Markup Language", "Home Tool Markup Language"], correct: 0 },
+            { question: "Which HTML tag is used to define an internal style sheet?", options: ["<script>", "<style>", "<css>"], correct: 1 },
+            { question: "Which tag is used to create a hyperlink?", options: ["<a>", "<link>", "<href>"], correct: 0 },
+            { question: "What is the default display property of a <div> element?", options: ["inline", "block", "flex"], correct: 1 },
+            { question: "Which attribute is used to specify an image source in HTML?", options: ["href", "src", "alt"], correct: 1 },
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Load the first question
+        function loadQuestion() {
+            const questionText = document.getElementById("questionText");
+            const optionsList = document.getElementById("optionsList");
+
+            if (currentQuestionIndex < quizData.length) {
+                const currentQuestion = quizData[currentQuestionIndex];
+                questionText.innerText = currentQuestion.question;
+                questionText.classList.remove("fade-in"); 
+                setTimeout(() => questionText.classList.add("fade-in"), 100);
+
+                optionsList.innerHTML = "";
+                currentQuestion.options.forEach((option, index) => {
+                    optionsList.innerHTML += `<label><input type="radio" name="option" value="${index}"> ${option}</label>`;
+                });
+            } else {
+                showNotification(`🏆 Quiz Completed! Your score: ${score}/${quizData.length}`, "blue");
+                document.getElementById("quiz").innerHTML = `<h3>Quiz Finished! 🎉</h3><p>Your score: ${score} / ${quizData.length}</p>`;
+            }
+        }
+
+        // Submit Answer
+        function submitAnswer() {
+            const selectedOption = document.querySelector('input[name="option"]:checked');
+            if (!selectedOption) {
+                showNotification("⚠️ Please select an option!", "red");
+                return;
+            }
+
+            const answer = parseInt(selectedOption.value);
+            if (answer === quizData[currentQuestionIndex].correct) {
+                score++;
+                showNotification("✅ Correct!", "green");
+            } else {
+                showNotification("❌ Incorrect!", "red");
+            }
+
+            currentQuestionIndex++;
+            setTimeout(loadQuestion, 1000);
+        }
+
+        // Show Notification (without alerts)
+        function showNotification(message, color = "#28a745") {
+            const notification = document.getElementById("notification");
+            notification.innerText = message;
+            notification.style.background = color;
+            notification.style.display = "block";
+            setTimeout(() => { notification.style.display = "none"; }, 3000);
+        }
+
+        // Load the first question on page load
+        loadQuestion();
+    </script>
+
+</body>
+</html>

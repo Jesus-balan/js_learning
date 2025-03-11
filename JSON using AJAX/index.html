@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJAX JSON Example</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery -->
+</head>
+<body>
+    <h2>Titles from JSON</h2>
+    <ul id="titleList"></ul> <!-- This is where the titles will be displayed -->
+
+    <script>
+        $(document).ready(function() {  
+            // When the document is fully loaded, execute this function
+            
+            $.ajax({
+                url: 'data.json', // URL of the JSON file
+                method: 'GET', // HTTP method to fetch data
+                dataType: 'json', // Data type expected from the server
+                success: function(response) {  
+                    // Function to handle success response
+                    let titles = response.titles; // Extract the "titles" array from JSON
+                    
+                    $.each(titles, function(index, title) {  
+                        // Loop through each title in the array
+                        $('#titleList').append('<li>' + title + '</li>');  
+                        // Append each title as a list item inside the <ul> element
+                    });
+                },
+                error: function(xhr, status, error) {  
+                    // Function to handle errors
+                    console.log('Error: ' + error);  
+                    // Log error message in the console
+                }
+            });
+        });
+    </script>
+</body>
+</html>
