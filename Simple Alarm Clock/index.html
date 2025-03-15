@@ -3,103 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alarm Clock</title>
+    <title>Simple Alarm Clock</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { text-align: center; background: #ffffff; padding: 20px; }
-        h2 { font-size: 24px; margin-bottom: 15px; }
-        .clock { font-size: 40px; font-weight: bold; margin-bottom: 20px; color: #333; }
-        input, button { padding: 10px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; cursor: pointer; }
-        button { background: #007bff; color: white; border: none; margin: 5px; }
-        button:hover { background: #0056b3; }
-        .stop-btn { background: red; }
-        .stop-btn:hover { background: darkred; }
-        .notification { margin-top: 15px; padding: 10px; display: none; font-size: 18px; background: #28a745; color: white; border-radius: 5px; }
-        .blinking { animation: blink 1s infinite alternate; }
-        @keyframes blink {
-            from { opacity: 1; }
-            to { opacity: 0.5; }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        #clock {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        input, button {
+            font-size: 1em;
+            padding: 10px;
+            margin: 5px;
         }
     </style>
 </head>
 <body>
 
-    <h2>⏰ Alarm Clock</h2>
-
-    <!-- Display Current Time -->
-    <div class="clock" id="currentTime">00:00:00</div>
-
-    <!-- Notification Message -->
-    <div class="notification" id="notification"></div>
-
-    <!-- Set Alarm -->
+    <h2>Simple Alarm Clock ⏰</h2>
+    <div id="clock">00:00:00</div>
     <input type="time" id="alarmTime">
     <button onclick="setAlarm()">Set Alarm</button>
-    <button class="stop-btn" onclick="stopAlarm()">Stop Alarm</button>
+    <button onclick="cancelAlarm()">Cancel Alarm</button>
+    <p id="status"></p>
 
     <script>
-        // Get Elements
-        const currentTimeDisplay = document.getElementById("currentTime");
-        const alarmTimeInput = document.getElementById("alarmTime");
-        const notification = document.getElementById("notification");
-        let alarmTime = null; // Store alarm time
-        let alarmSound = new Audio("https://www.soundjay.com/button/beep-07.wav"); // Alarm sound
-        let alarmActive = false; // Flag for active alarm
-
-        // Update Current Time Every Second
         function updateClock() {
             const now = new Date();
-            let hours = now.getHours().toString().padStart(2, "0");
-            let minutes = now.getMinutes().toString().padStart(2, "0");
-            let seconds = now.getSeconds().toString().padStart(2, "0");
-
-            currentTimeDisplay.innerText = `${hours}:${minutes}:${seconds}`;
-
-            // Check if it's time to ring the alarm
-            if (alarmTime && `${hours}:${minutes}` === alarmTime && !alarmActive) {
-                ringAlarm();
-            }
+            let hours = String(now.getHours()).padStart(2, '0');
+            let minutes = String(now.getMinutes()).padStart(2, '0');
+            let seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById("clock").innerText = `${hours}:${minutes}:${seconds}`;
         }
 
-        setInterval(updateClock, 1000); // Updates clock every second
+        let alarmTime = null;
 
-        // Set Alarm
         function setAlarm() {
-            if (alarmTimeInput.value) {
-                alarmTime = alarmTimeInput.value; // Store selected time
-                alarmActive = false; // Reset alarm flag
-                showNotification(`✅ Alarm set for ${alarmTime}`);
-            } else {
-                showNotification("⚠️ Please select a valid time!", "red");
+            alarmTime = document.getElementById("alarmTime").value;
+            if (alarmTime) {
+                document.getElementById("status").innerText = `Alarm set for ${alarmTime}`;
             }
         }
 
-        // Ring Alarm
-        function ringAlarm() {
-            alarmActive = true; // Set alarm flag
-            alarmSound.loop = true; // Repeat alarm sound
-            alarmSound.play(); // Play alarm sound
-            showNotification("⏰ Alarm is ringing!", "orange");
-            currentTimeDisplay.classList.add("blinking"); // Add blinking effect
+        function cancelAlarm() {
+            alarmTime = null;
+            document.getElementById("status").innerText = "Alarm Canceled ❌";
         }
 
-        // Stop Alarm
-        function stopAlarm() {
-            alarmActive = false; // Reset alarm flag
-            alarmSound.pause(); // Stop alarm sound
-            alarmSound.currentTime = 0; // Reset sound position
-            alarmTime = null; // Clear alarm time
-            showNotification("🚫 Alarm stopped!", "red");
-            currentTimeDisplay.classList.remove("blinking"); // Remove blinking effect
+        function checkAlarm() {
+            const now = new Date();
+            let currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            if (alarmTime === currentTime) {
+                alert("⏰ Time's up! Wake up!");
+                alarmTime = null; // Reset alarm after triggering
+                document.getElementById("status").innerText = "";
+            }
         }
 
-        // Show Notification (without alerts)
-        function showNotification(message, color = "#28a745") {
-            notification.innerText = message;
-            notification.style.background = color;
-            notification.style.display = "block";
-            setTimeout(() => { notification.style.display = "none"; }, 3000);
-        }
+        setInterval(updateClock, 1000); // Update clock every second
+        setInterval(checkAlarm, 1000); // Check alarm every second
     </script>
 
 </body>

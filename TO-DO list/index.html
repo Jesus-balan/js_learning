@@ -3,246 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced TO-DO List</title>
+    <title>To-Do List</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
         body {
-            background-color: #f8f9fa;
-            color: #333;
+            font-family: Arial, sans-serif;
             text-align: center;
-            padding: 20px;
-        }
-        h2 {
-            font-size: 26px;
-            margin-bottom: 20px;
+            margin: 50px;
         }
         #todo-container {
             max-width: 500px;
             margin: auto;
-            background: #ffffff;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
             border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+        input {
+            width: 70%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            font-size: 16px;
-            outline: none;
-            margin: 5px 0;
         }
         button {
-            width: 100%;
-            padding: 10px 15px;
+            padding: 10px;
+            background: green;
+            color: white;
             border: none;
             cursor: pointer;
             border-radius: 5px;
-            font-size: 14px;
-            transition: 0.3s;
+            width: 100px;
         }
-        .add-btn {
-            background-color: #28a745;
-            color: white;
-        }
-        .add-btn:hover {
-            background-color: #218838;
-        }
-        .edit-btn {
-            background-color: #ffc107;
-        }
-        .edit-btn:hover {
-            background-color: #e0a800;
-        }
-        .delete-btn {
-            background-color: #dc3545;
-            color: white;
-        }
-        .delete-btn:hover {
-            background-color: #c82333;
+        button:hover {
+            background: darkgreen;
         }
         ul {
             list-style: none;
             padding: 0;
-            margin-top: 15px;
         }
         li {
-            background: #f8f9fa;
-            padding: 12px;
+            background: lightblue;
+            padding: 10px;
             margin: 5px 0;
             border-radius: 5px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-        .task-title {
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .task-desc {
-            font-size: 14px;
-            color: #555;
-            margin: 5px 0;
-        }
-        .task-info {
-            font-size: 12px;
-            color: #777;
-        }
-        .task-actions {
             display: flex;
             justify-content: space-between;
-            margin-top: 8px;
-        }
-
-        /* Popup Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
             align-items: center;
         }
-        .modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 400px;
-            text-align: center;
-            position: relative;
+        .task-container {
+            display: flex;
+            flex-direction: column; /* Task and description in column */
+            text-align: left;
+            flex: 1;
         }
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 20px;
+        .delete {
+            background: red;
+            color: white;
+            border: none;
+            padding: 8px;
             cursor: pointer;
-            color: #999;
-        }
-        .close-btn:hover {
-            color: #333;
+            border-radius: 5px;
+            margin-left: 10px;
         }
     </style>
 </head>
 <body>
 
-    <h2>📝 Enhanced TO-DO List (With Edit Popup)</h2>
+    <h2>To-Do List</h2>
     <div id="todo-container">
-        <input type="text" id="taskInput" placeholder="Enter a task title...">
-        <textarea id="taskDesc" rows="2" placeholder="Enter task description..."></textarea>
-        <button class="add-btn" onclick="addTask()">Add</button>
-        <ul id="taskList"></ul>
-    </div>
-
-    <!-- Edit Modal -->
-    <div class="modal" id="editModal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            <h3>Edit Task</h3>
-            <input type="text" id="editTaskInput">
-            <textarea id="editTaskDesc" rows="2"></textarea>
-            <button class="edit-btn" onclick="updateTask()">Update</button>
-        </div>
+        <input type="text" id="todoInput" placeholder="Enter task...">
+        <input type="text" id="todoDes" placeholder="Enter Description..."> <br>
+        <button onclick="addTask()">Add</button>
+        <ul id="todoList"></ul>
     </div>
 
     <script>
-        let editIndex = null; // Track current edit index
-
-        function loadTasks() {
-            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-            tasks.forEach(task => addTaskToUI(task.text, task.desc));
-        }
-
         function addTask() {
-            let taskInput = document.getElementById("taskInput").value.trim();
-            let taskDesc = document.getElementById("taskDesc").value.trim();
+            const input = document.getElementById("todoInput");
+            const des = document.getElementById("todoDes");
 
-            if (taskInput === "") {
-                alert("Task title cannot be empty!");
-                return;
-            }
+            const task = input.value.trim();
+            const taskDes = des.value.trim(); 
 
-            addTaskToUI(taskInput, taskDesc);
-            saveTaskToLocalStorage(taskInput, taskDesc);
-            document.getElementById("taskInput").value = ""; 
-            document.getElementById("taskDesc").value = ""; 
-        }
+            if (task === "" || taskDes === "") return; 
 
-        function addTaskToUI(task, desc) {
-            let taskList = document.getElementById("taskList");
+            const li = document.createElement("li");
 
-            let li = document.createElement("li");
             li.innerHTML = `
-                <div class="task-title">${task}</div>
-                <div class="task-desc">${desc || "No description provided."}</div>
-                <div class="task-actions">
-                    <button class="edit-btn" onclick="openEditModal(this)">Edit</button>
-                    <button class="delete-btn" onclick="deleteTask(this)">Delete</button>
+                <div class="task-container">
+                    <strong>${task}</strong>
+                    <span>${taskDes}</span>
                 </div>
+                <button class="delete" onclick="removeTask(this)">X</button>
             `;
-            taskList.appendChild(li);
+
+            document.getElementById("todoList").appendChild(li);
+            
+            input.value = "";
+            des.value = ""; 
         }
 
-        function saveTaskToLocalStorage(task, desc) {
-            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-            tasks.push({ text: task, desc: desc });
-            localStorage.setItem("tasks", JSON.stringify(tasks));
+        function removeTask(button) {
+            button.parentElement.remove();
         }
-
-        function openEditModal(element) {
-            let taskItem = element.parentElement.parentElement;
-            let oldTask = taskItem.querySelector(".task-title").textContent;
-            let oldDesc = taskItem.querySelector(".task-desc").textContent;
-
-            document.getElementById("editTaskInput").value = oldTask;
-            document.getElementById("editTaskDesc").value = oldDesc;
-
-            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-            editIndex = tasks.findIndex(t => t.text === oldTask);
-
-            document.getElementById("editModal").style.display = "flex";
-        }
-
-        function closeModal() {
-            document.getElementById("editModal").style.display = "none";
-        }
-
-        function updateTask() {
-            let newTask = document.getElementById("editTaskInput").value.trim();
-            let newDesc = document.getElementById("editTaskDesc").value.trim();
-
-            if (newTask === "") {
-                alert("Task title cannot be empty!");
-                return;
-            }
-
-            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-            tasks[editIndex].text = newTask;
-            tasks[editIndex].desc = newDesc;
-            localStorage.setItem("tasks", JSON.stringify(tasks));
-
-            document.getElementById("taskList").innerHTML = "";
-            loadTasks();
-            closeModal();
-        }
-
-        function deleteTask(element) {
-            let taskText = element.parentElement.parentElement.querySelector(".task-title").textContent;
-            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-            tasks = tasks.filter(task => task.text !== taskText);
-            localStorage.setItem("tasks", JSON.stringify(tasks));
-            element.parentElement.parentElement.remove();
-        }
-
-        window.onload = loadTasks;
     </script>
 
 </body>

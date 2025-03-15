@@ -1,0 +1,3 @@
+This is a sample text file.
+It contains miscellaneous data fetched via AJAX.
+You can load any textual content dynamically.
