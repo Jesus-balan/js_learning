@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background: #f4f4f4;
+        }
+        #container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: darkgreen;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .gallery img {
+            width: 150px;
+            height: 150px;
+            margin: 5px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>🔍 Image Search</h2>
+    <div id="container">
+        <input type="text" id="searchInput" placeholder="Enter keyword">
+        <button onclick="searchImages()">Search</button>
+        <div class="gallery" id="gallery"></div>
+    </div>
+
+    <script>
+        async function searchImages() {
+            let query = document.getElementById("searchInput").value;
+            let gallery = document.getElementById("gallery");
+            gallery.innerHTML = "";
+
+            if (!query) {
+                gallery.innerHTML = "<p>Please enter a keyword!</p>";
+                return;
+            }
+
+            let url = `https://api.unsplash.com/search/photos?query=${query}&client_id=2_zTLq5Q0Zfp69b_0FoZugG_OduxM3XvJz1-WYtHaIg`;
+
+            try {
+                let response = await fetch(url);
+                let data = await response.json();
+                let images = data.results;
+
+                if (images.length === 0) {
+                    gallery.innerHTML = "<p>No images found!</p>";
+                    return;
+                }
+
+                images.forEach(img => {
+                    let imageElement = document.createElement("img");
+                    imageElement.src = img.urls.small;
+                    gallery.appendChild(imageElement);
+                });
+            } catch (error) {
+                console.error("Error fetching images:", error);
+                gallery.innerHTML = "<p>Failed to load images.</p>";
+            }
+        }
+    </script>
+
+</body>
+</html>

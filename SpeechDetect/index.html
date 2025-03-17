@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech Detection</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        button { padding: 10px 20px; font-size: 18px; cursor: pointer; }
+        p { font-size: 20px; font-weight: bold; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <h2>🎤 Speech Detection</h2>
+    <button onclick="startListening()">Start Listening</button>
+    <p id="output">Your speech will appear here...</p>
+
+    <script>
+        function startListening() {
+            let output = document.getElementById("output");
+
+            // Check if Speech Recognition API is supported
+            let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Speech Recognition not supported in your browser. Try using Chrome.");
+                return;
+            }
+
+            let recognition = new SpeechRecognition();
+            recognition.lang = "en-US";  // Set language
+            recognition.interimResults = true;
+
+            recognition.onstart = function() {
+                output.innerText = "Listening...";
+            };
+
+            recognition.onresult = function(event) {
+                let transcript = event.results[0][0].transcript;
+                output.innerText = "You said: " + transcript;
+            };
+
+            recognition.onerror = function(event) {
+                output.innerText = "Error: " + event.error;
+            };
+
+            recognition.start();
+        }
+    </script>
+
+</body>
+</html>

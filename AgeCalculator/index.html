@@ -19,35 +19,50 @@
 </head>
 <body>
 
-    <h2>🎂 Age Calculator</h2>
+    <h2> Age Calculator</h2>
     <label>Enter Your Birthdate:</label>
     <input type="date" id="birthdate">
     <button onclick="calculateAge()">Calculate Age</button>
     <h3 id="result"></h3>
 
     <script>
+        // Set max date (today) to prevent future date selection
+        const today = new Date().toISOString().split("T")[0];
+        document.getElementById("birthdate").setAttribute("max", today);
+
         function calculateAge() {
-    const birthDateValue = document.getElementById("birthdate").value;
-    
-    if (!birthDateValue) {  // Check if the input is empty
-        document.getElementById("result").innerText = "Please select a valid date!";
-        return;
-    }
+            const birthDateValue = document.getElementById("birthdate").value;
+            
+            if (!birthDateValue) { 
+                document.getElementById("result").innerText = "Please select a valid date!";
+                return;
+            }
 
-    const birthDate = new Date(birthDateValue);
-    const today = new Date();
+            const birthDate = new Date(birthDateValue);
+            const today = new Date();
 
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    const dayDiff = today.getDate() - birthDate.getDate();
+            if (birthDate > today) {
+                document.getElementById("result").innerText = "Birthdate cannot be in the future!";
+                return;
+            }
 
-    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-        age--;
-    }
+            let years = today.getFullYear() - birthDate.getFullYear();
+            let months = today.getMonth() - birthDate.getMonth();
+            let days = today.getDate() - birthDate.getDate();
 
-    document.getElementById("result").innerText = `Your Age: ${age} years 🎉`;
-}
+            if (days < 0) {
+                months--;
+                const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                days += lastMonth.getDate();
+            }
 
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            document.getElementById("result").innerText = `Your Age: ${years} years, ${months} months, and ${days} days 🎉`;
+        }
     </script>
 
 </body>

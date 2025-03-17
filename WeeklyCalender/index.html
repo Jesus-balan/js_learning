@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week Calendar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .calendar {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .day {
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            min-width: 100px;
+            text-align: center;
+            background: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>📅 Week Calendar</h2>
+    <div class="calendar" id="weekCalendar"></div>
+
+    <script>
+        function generateWeek(callback) {
+            const today = new Date();
+            const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay())); // Get Sunday
+            let weekDays = [];
+
+            for (let i = 0; i < 7; i++) {
+                let day = new Date(startOfWeek);
+                day.setDate(startOfWeek.getDate() + i);
+                weekDays.push(day);
+            }
+
+            callback(weekDays);
+        }
+
+        function displayWeek(days) {
+            const container = document.getElementById("weekCalendar");
+            container.innerHTML = "";
+
+            days.forEach(day => {
+                let div = document.createElement("div");
+                div.classList.add("day");
+                div.innerText = day.toDateString();
+                container.appendChild(div);
+            });
+        }
+
+        generateWeek(displayWeek);
+    </script>
+
+</body>
+</html>

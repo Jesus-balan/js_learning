@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Subscription</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background: #f4f4f4;
+        }
+        #container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            background: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: darkgreen;
+        }
+        .message {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>📩 Subscribe to our Newsletter</h2>
+    <div id="container">
+        <input type="email" id="email" placeholder="Enter your email">
+        <button onclick="subscribe()">Subscribe</button>
+        <p id="message" class="message"></p>
+    </div>
+
+    <script>
+        function subscribe() {
+            let email = document.getElementById("email").value;
+            let message = document.getElementById("message");
+
+            if (!validateEmail(email)) {
+                message.style.color = "red";
+                message.innerText = "❌ Please enter a valid email!";
+                return;
+            }
+
+            message.style.color = "green";
+            message.innerText = "✅ Subscribed successfully!";
+            
+            // Simulating backend storage (In real case, send to server)
+            setTimeout(() => {
+                document.getElementById("email").value = "";
+                message.innerText = "";
+            }, 3000);
+        }
+
+        function validateEmail(email) {
+            let regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return regex.test(email);
+        }
+    </script>
+
+</body>
+</html>

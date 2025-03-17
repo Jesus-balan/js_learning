@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captcha Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        #captcha { font-size: 24px; font-weight: bold; letter-spacing: 5px; background: #eee; padding: 10px; display: inline-block; }
+        input { padding: 10px; font-size: 18px; margin-top: 10px; }
+        button { padding: 10px 20px; font-size: 18px; cursor: pointer; }
+        #message { margin-top: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2>🔐 Captcha Verification</h2>
+    <p id="captcha"></p>
+    <button onclick="generateCaptcha()">🔄 Refresh Captcha</button>
+
+    <br><br>
+    <input type="text" id="captchaInput" placeholder="Enter Captcha">
+    <button onclick="validateCaptcha()">✅ Verify</button>
+
+    <p id="message"></p>
+
+    <script>
+        let generatedCaptcha = "";
+
+        function generateCaptcha() {
+            let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            generatedCaptcha = "";
+            
+            for (let i = 0; i < 6; i++) {
+                let randomIndex = Math.floor(Math.random() * characters.length);
+                generatedCaptcha += characters[randomIndex];
+            }
+            
+            document.getElementById("captcha").innerText = generatedCaptcha;
+            document.getElementById("message").innerText = ""; // Clear message
+        }
+
+        function validateCaptcha() {
+            let userInput = document.getElementById("captchaInput").value;
+            let message = document.getElementById("message");
+
+            if (userInput === generatedCaptcha) {
+                message.style.color = "green";
+                message.innerText = "✅ Captcha Matched!";
+            } else {
+                message.style.color = "red";
+                message.innerText = "❌ Incorrect Captcha, Try Again!";
+            }
+        }
+
+        // Generate captcha on page load
+        generateCaptcha();
+    </script>
+
+</body>
+</html>

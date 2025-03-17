@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup Message</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        button { padding: 10px 20px; font-size: 18px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h2>🔔 Popup Message Generator</h2>
+    <button onclick="customPopup()">Show Custom Popup</button>
+
+    <script>
+        function customPopup() {
+            let name = prompt("Enter your name:");
+            if (name) {
+                alert("Welcome, " + name + "!");
+            } else {
+                alert("You didn't enter anything!");
+            }
+        }
+    </script>
+
+</body>
+</html>

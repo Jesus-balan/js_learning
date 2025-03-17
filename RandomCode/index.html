@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Code Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        button { padding: 10px 20px; font-size: 18px; cursor: pointer; }
+        #code { font-size: 22px; margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2>🔑 Random Code Generator</h2>
+    <button onclick="generateCode()">Generate Code</button>
+    <p id="code">Click the button to generate a code.</p>
+
+    <script>
+        function generateCode(length = 10) {
+            let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+            let code = "";
+            
+            for (let i = 0; i < length; i++) {  
+                let randomIndex = Math.floor(Math.random() * characters.length);
+                code += characters[randomIndex];
+            }
+            
+            document.getElementById("code").innerText = `Generated Code: ${code}`;
+        }
+    </script>
+
+</body>
+</html>
