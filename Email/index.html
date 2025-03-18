@@ -5,77 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Email Subscription</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 20px;
-            background: #f4f4f4;
-        }
-        #container {
-            max-width: 400px;
-            margin: auto;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            padding: 10px 15px;
-            background: green;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        button:hover {
-            background: darkgreen;
-        }
-        .message {
-            margin-top: 10px;
-            font-weight: bold;
-        }
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        #container { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input, button { width: 100%; padding: 10px; margin: 10px 0; font-size: 16px; }
+        button { background: green; color: white; border: none; cursor: pointer; }
+        button:hover { background: darkgreen; }
+        #message { color: green; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <h2>📩 Subscribe to our Newsletter</h2>
+    <h2>📩 Subscribe to Our Newsletter</h2>
+    
     <div id="container">
-        <input type="email" id="email" placeholder="Enter your email">
+        <input type="email" id="emailInput" placeholder="Enter your email..." required>
         <button onclick="subscribe()">Subscribe</button>
-        <p id="message" class="message"></p>
+        <p id="message"></p>
     </div>
 
     <script>
         function subscribe() {
-            let email = document.getElementById("email").value;
+            let email = document.getElementById("emailInput").value;
             let message = document.getElementById("message");
 
-            if (!validateEmail(email)) {
+            // Email validation regex
+            let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+            if (!email.match(emailPattern)) {
                 message.style.color = "red";
-                message.innerText = "❌ Please enter a valid email!";
+                message.innerText = "❌ Please enter a valid email address.";
                 return;
             }
 
+            // Show success message
             message.style.color = "green";
-            message.innerText = "✅ Subscribed successfully!";
+            message.innerText = "✅ Subscription successful! Thank you for subscribing.";
             
-            // Simulating backend storage (In real case, send to server)
-            setTimeout(() => {
-                document.getElementById("email").value = "";
-                message.innerText = "";
-            }, 3000);
-        }
-
-        function validateEmail(email) {
-            let regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            return regex.test(email);
+            // Clear input
+            document.getElementById("emailInput").value = "";
         }
     </script>
 

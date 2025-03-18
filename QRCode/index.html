@@ -3,41 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Scanner</title>
-    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <title>QR Code Generator & Scanner</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.2.1/minified/html5-qrcode.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
-        #reader { width: 300px; margin: auto; }
-        #result { margin-top: 10px; font-size: 18px; color: green; font-weight: bold; }
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        input, button { margin: 10px; padding: 10px; font-size: 16px; }
+        #qrcode { margin-top: 20px; }
+        .qr-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .scanner { width: 300px; height: 300px; margin: auto; }
     </style>
 </head>
 <body>
 
-    <h2>QR Code Scanner</h2>
-    <div id="reader"></div>
-    <p id="result">Scan a QR Code</p>
+    <h2>🔳 QR Code Generator & Scanner</h2>
+
+    <!-- QR Code Generator -->
+    <h3>Generate QR Code</h3>
+    <input type="text" id="qrText" placeholder="Enter text or URL">
+    <button onclick="generateQR()">Generate QR</button>
+    <div id="qrcode"></div>
+    <button id="downloadBtn" style="display:none;" onclick="downloadQR()">Download QR</button>
+
+    <hr>
+
+    <!-- QR Code Scanner -->
+    <h3>Scan QR Code</h3>
+    <div id="reader" class="scanner"></div>
+    <p><strong>Scanned Result:</strong> <span id="scanResult">None</span></p>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            function onScanSuccess(decodedText, decodedResult) {
-                document.getElementById("result").innerText = "Scanned: " + decodedText;
-                qrScanner.stop(); // Stop scanning after first successful scan
+        // Generate QR Code
+        function generateQR() {
+            let qrText = document.getElementById("qrText").value;
+            if (qrText.trim() === "") {
+                alert("Please enter text or a URL");
+                return;
             }
 
-            function onScanError(errorMessage) {
-                console.warn(errorMessage);
-            }
-
-            let qrScanner = new Html5Qrcode("reader");
-            qrScanner.start(
-                { facingMode: "environment" }, // Use back camera
-                { fps: 10, qrbox: 250 },
-                onScanSuccess,
-                onScanError
-            ).catch(err => {
-                console.error("Camera Error: ", err);
+            document.getElementById("qrcode").innerHTML = "";
+            let qr = new QRCode(document.getElementById("qrcode"), {
+                text: qrText,
+                width: 200,
+                height: 200
             });
-        });
+
+            document.getElementById("downloadBtn").style.display = "inline-block";
+        }
+
+        // Download QR Code
+        function downloadQR() {
+            let qrCanvas = document.querySelector("#qrcode canvas");
+            let qrDataURL = qrCanvas.toDataURL("image/png");
+
+            let link = document.createElement("a");
+            link.href = qrDataURL;
+            link.download = "qrcode.png";
+            link.click();
+        }
+
+        // QR Scanner
+        function startScanner() {
+            let html5QrCode = new Html5Qrcode("reader");
+            html5QrCode.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: 250 },
+                (decodedText) => {
+                    document.getElementById("scanResult").innerText = decodedText;
+                    html5QrCode.stop();
+                },
+                (errorMessage) => { console.log(errorMessage); }
+            ).catch(err => console.log(err));
+        }
+
+        startScanner();
     </script>
 
 </body>

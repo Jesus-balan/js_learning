@@ -3,24 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Popup Message</title>
+    <title>Add User/Product Popup</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-        button { padding: 10px 20px; font-size: 18px; cursor: pointer; }
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            padding: 50px; 
+        }
+        button { 
+            padding: 10px 20px; 
+            font-size: 18px; 
+            cursor: pointer; 
+            margin: 10px;
+        }
+        
+        /* Popup Styles */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .popup-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 300px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        input {
+            padding: 8px;
+            width: 90%;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        .popup-btn {
+            background: green;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .close-btn {
+            background: red;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .user-list {
+            margin-top: 20px;
+            text-align: left;
+            display: inline-block;
+        }
+        .user-list div {
+            background: #f4f4f4;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
 
-    <h2>🔔 Popup Message Generator</h2>
-    <button onclick="customPopup()">Show Custom Popup</button>
+    <h2>Add New User / Product</h2>
+    <button onclick="showPopup()">Add New</button>
+
+    <!-- Popup Structure -->
+    <div class="popup-overlay" id="popup">
+        <div class="popup-box">
+            <h3>Add New Entry</h3>
+            <input type="text" id="itemName" placeholder="Enter name...">
+            <br>
+            <input type="text" id="itemCategory" placeholder="Enter category...">
+            <br>
+            <button class="popup-btn" onclick="submitForm()">Submit</button>
+            <button class="close-btn" onclick="closePopup()">Close</button>
+        </div>
+    </div>
+
+    <h3>📜 List of Entries:</h3>
+    <div class="user-list" id="itemList"></div>
 
     <script>
-        function customPopup() {
-            let name = prompt("Enter your name:");
-            if (name) {
-                alert("Welcome, " + name + "!");
+        function showPopup() {
+            document.getElementById("popup").style.display = "flex";
+        }
+
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+        }
+
+        function submitForm() {
+            let name = document.getElementById("itemName").value.trim();
+            let category = document.getElementById("itemCategory").value.trim();
+
+            if (name && category) {
+                let list = document.getElementById("itemList");
+
+                let div = document.createElement("div");
+                div.innerHTML = `<strong>${name}</strong> - ${category}`;
+                list.appendChild(div);
+
+                closePopup();
+                document.getElementById("itemName").value = "";
+                document.getElementById("itemCategory").value = "";
             } else {
-                alert("You didn't enter anything!");
+                alert("Please fill in all fields!");
             }
         }
     </script>

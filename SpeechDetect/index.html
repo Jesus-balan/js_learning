@@ -3,48 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speech Detection</title>
+    <title>Speech to Text</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        button { padding: 10px 20px; font-size: 18px; cursor: pointer; }
-        p { font-size: 20px; font-weight: bold; margin-top: 20px; }
+        textarea { width: 80%; height: 100px; margin: 10px; font-size: 16px; padding: 10px; }
+        button { margin: 10px; padding: 10px 20px; font-size: 18px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <h2>🎤 Speech Detection</h2>
-    <button onclick="startListening()">Start Listening</button>
-    <p id="output">Your speech will appear here...</p>
+    <h2>🎤 Speech to Text Converter</h2>
+    
+    <textarea id="text" placeholder="Your speech will appear here..." readonly></textarea><br>
+    <button onclick="startListening()">🎙 Start Listening</button>
+    <button onclick="stopListening()">⏹ Stop</button>
 
     <script>
-        function startListening() {
-            let output = document.getElementById("output");
+        let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = "en-US";
 
-            // Check if Speech Recognition API is supported
-            let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                alert("Speech Recognition not supported in your browser. Try using Chrome.");
-                return;
+        recognition.onresult = (event) => {
+            let transcript = "";
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                transcript += event.results[i][0].transcript;
             }
+            document.getElementById("text").value = transcript;
+        };
 
-            let recognition = new SpeechRecognition();
-            recognition.lang = "en-US";  // Set language
-            recognition.interimResults = true;
-
-            recognition.onstart = function() {
-                output.innerText = "Listening...";
-            };
-
-            recognition.onresult = function(event) {
-                let transcript = event.results[0][0].transcript;
-                output.innerText = "You said: " + transcript;
-            };
-
-            recognition.onerror = function(event) {
-                output.innerText = "Error: " + event.error;
-            };
-
+        function startListening() {
             recognition.start();
+        }
+
+        function stopListening() {
+            recognition.stop();
         }
     </script>
 
